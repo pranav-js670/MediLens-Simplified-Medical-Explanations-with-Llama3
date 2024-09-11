@@ -1,0 +1,131 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Doctor</title>
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+  <style>
+        body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: url('{% static 'doctor.jpg' %}') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 600px;
+      margin: auto; /* Center the container horizontally */
+      margin-top: 6vh; /* Margin from the top (adjust as needed) */
+      /* Margin from the bottom (adjust as needed) */
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* Center form elements horizontally */
+    }
+    .medcare-text {
+        font-size:24px;
+      font-weight: bold;
+      color: #28a745; /* Green color */
+      margin-bottom: 10px; /* Add some space below the text */
+    }
+    textarea {
+      width: 100%;
+      max-width: 100%;
+      padding: 10px;
+      border: 1px solid #ced4da;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      box-sizing: border-box; /* Include padding in width calculation */
+    }
+    .flex {
+      display: flex;
+      justify-content: center;
+    }
+    .button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      color: white;
+      margin: 5px;
+    }
+    .button-green {
+      background-color: #28a745;
+    }
+    .button-green:hover {
+      background-color: #218838;
+    }
+    .button-blue {
+      background-color: #007bff;
+    }
+    .button-blue:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="medcare-text">Medcare</div>
+      <textarea id="text" rows="20" cols="50" name="text" class="border border-gray-400 px-4 py-2 w-full resize-none mb-4 rounded-lg"></textarea>
+      <div class="flex space-x-2">
+        <button type="submit" name="submit_button" value="submit1" class="button button-blue">ChatBot</button>
+        <button type="submit" name="submit_button" value="submit2" class="button button-green">Biomedical NER</button>
+        <button id="toggleListening" class="toggle-button" class="button button-blue">Start Listening</button>
+      </div>
+    </form>
+  </div>
+
+
+</body>
+</html>
+
+<script>
+    const text = document.getElementById('text');
+      let listening = false;
+    let recognition = null;
+
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+      recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-IN';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+
+      recognition.onstart = function() {
+        listening = true;
+        toggleListeningBtn.innerText = 'Stop Listening';
+      };
+
+      recognition.onend = function() {
+        listening = false;
+        toggleListeningBtn.innerText = 'Start Listening';
+      };
+
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        text.value = transcript;
+      };
+    } else {
+      toggleListeningBtn.disabled = true;
+      text.value = 'Your browser does not support speech recognition.';
+    }
+
+    toggleListeningBtn.addEventListener('click', function() {
+      if (listening) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    });
+</script>

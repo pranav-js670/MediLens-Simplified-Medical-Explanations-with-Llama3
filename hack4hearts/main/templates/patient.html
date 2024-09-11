@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient</title>
+    <script src="{% static 'jquery.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'patient.css' %}">
+    <style>
+        body {
+            background: url('{% static 'doctor.jpg' %}') no-repeat center center fixed;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div class="pointwise-text">
+            <h3>Prescription in Layman's Language</h3>
+            <p id="dynamicText">
+                {{ response }}
+            </p>
+        </div>
+        <div>
+            <h3>Any queries? 👇</h3>
+            <input type="text" id="questionInput">
+            <button id="askButton">Ask</button>
+            <h3 id="queryAnswer">Answer: <span id="responseText"></span></h3>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            // Function to handle button click
+            $("#askButton").click(function(){
+                var question = $("#questionInput").val(); // Get the user input
+                var response = $("#dynamicText").text(); // Get the response text
+                // Send the question to the server
+                $.ajax({
+                    url: "{% url 'main:get_query_answer' %}", // Use the named URL for get_query_answer
+                    method: "POST",
+                    data: {
+                        'question': question,
+                        'response': response,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}' // Include CSRF token
+                    },
+                    success: function(data){
+                        $("#responseText").text(data.query_answer); // Update query_answer
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

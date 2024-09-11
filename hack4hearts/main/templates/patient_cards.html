@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Patient Card</title>
+    <link href="patient_cards.css">
+    <style>
+        body {
+    color: black;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: url('{% static 'card.jpg' %}') no-repeat center center fixed;
+      background-size: cover;
+
+    }
+        .container {
+    text-align: center;
+
+}
+
+   .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 0 20px;
+
+}
+
+.card {
+    background-color: #60E0D4;
+    opacity: 0.7;
+    color: black;
+    flex-basis: calc(20% - 20px); /* Adjust width for maximum 3 cards in a row */
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transition for hover effect */
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Lift on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+}
+
+.card h2 {
+    color: #333;
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: black;
+}
+
+.card ul {
+    list-style-type: none;
+    padding: 0;
+    color: black;
+}
+
+.card li {
+    margin-bottom: 5px;
+    color: black;
+}
+
+h1 {
+    margin-bottom: 20px; /* Space between heading and cards */
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h1 style=" margin-bottom:60px ">Patient Card</h1>
+
+    <div class="card-container">
+    {% for key, values in mapper.items %}
+        <div class="card">
+            <h2>{{ key }}</h2>
+            <ul>
+                {% for value in values %}
+                    <li>{{ value }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+</body>
+</html>
